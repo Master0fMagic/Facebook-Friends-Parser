@@ -33,8 +33,9 @@ def get_element(xpath):
         return  WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.XPATH, xpath))
     )
-    except NoSuchElementException as ex:
+    except TimeoutException as ex:
         print(ex)
+        driver.quit()
         sys.exit()
 
 
@@ -43,17 +44,16 @@ def get_elements(xpath):
         return  WebDriverWait(driver, 10).until(
         EC.presence_of_all_elements_located((By.XPATH, xpath))
     )
-    except NoSuchElementException as ex:
-        print(ex)
-        sys.exit()
     except TimeoutException as ex:
         print(ex)
+        driver.quit()
         sys.exit()
 
 
 def go_to_page_without_redirecting(url):
     driver.get(url)
     return url
+
 
 def go_to_page(url:str) -> str: 
     cur_url = driver.current_url
@@ -137,4 +137,9 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as ex:
+        print(ex)
+        driver.quit()
+        sys.exit()
